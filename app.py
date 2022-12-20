@@ -29,16 +29,16 @@ def home():
 def item_details():
     form = ItemDetails()
     if request.method == "POST":
-        print(request.form)
-        name = request.form['name']
-        weight = request.form['weight']
-        date = request.form['date']
-        receiver = request.form['receiver']
-        receiver_phone = request.form['receiver_phone']
-        with sqlite3.connect('database.db') as con:
-            con.execute('insert into itemdetails (name,weight,date,receiver,receiver_phone) values (?,?,?,?,?)',
-                        (name, weight, date, receiver, receiver_phone))
-        return redirect('/services')
+            print(request.form)
+            name = request.form['name']
+            weight = request.form['weight']
+            date = request.form['date']
+            receiver = request.form['receiver']
+            receiver_phone = request.form['receiver_phone']
+            with sqlite3.connect('database.db') as con:
+                con.execute('insert into itemdetails (name,weight,date,receiver,receiver_phone) values (?,?,?,?,?)',
+                            (name, weight, date, receiver, receiver_phone))
+            return redirect('/services')
     return render_template('item_details.html', form=form)
 
 
@@ -54,9 +54,23 @@ def services():
             return render_template('services.html')
 
 
-@app.route('/address')
+@app.route('/address', methods=['POST', 'GET'])
 def address():
+    if request.method == 'POST':
+        print(request.form)
+        return redirect('/summary')
     return render_template('address.html')
+
+
+@app.route('/summary')
+def summary():
+    price = 300
+    return render_template('summary.html', price=price)
+
+
+@app.route('/success')
+def success():
+    return render_template('success.html')
 
 
 @app.route('/list_items')
@@ -68,6 +82,15 @@ def list_items():
         row = cur.fetchall()
     print(row)
     return render_template('list_items.html', row=row)
+
+
+@app.route('/edit_item/<int:id>')
+def edit_item(id):
+    print(id)
+    with sqlite3.connect('database.db') as con:
+        var = con.execute('select name from itemdetails where id=id')
+        print(var)
+    return render_template('edit_item.html')
 
 
 @app.route('/register', methods=['GET', 'POST'])

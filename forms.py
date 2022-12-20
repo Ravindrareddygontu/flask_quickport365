@@ -27,7 +27,7 @@ class DeliveryRange(FlaskForm):
 class ItemDetails(FlaskForm):
     id = IntegerField(validators=[DataRequired()])
     name = StringField(validators=[DataRequired()])
-    weight = IntegerField(validators=[DataRequired(),Length(max=8)])
+    weight = IntegerField(validators=[DataRequired()])
     date = DateTimeField(validators=[DataRequired()])
     receiver = StringField(validators=[DataRequired()])
     receiver_phone = StringField(validators=[DataRequired()])

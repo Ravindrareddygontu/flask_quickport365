@@ -6,11 +6,13 @@
 </head>
 <body>
 {% for i in row %}
-{{i.name}}
-{{i.weight}}
-{{i.date}}
-{{i.receiver}}
-{{i.receiver_phone}}<hr>
+Item Name = {{i.name}}<br>
+Item Name = {{i.weight}}<br>
+Order date = {{i.date}}<br>
+Receiver = {{i.receiver}}<br>
+Receiver Phone = {{i.receiver_phone}}<br>
+<a href="/edit_item/{{i.id}}">Edit</a>
+<a href="/delete_item">Delete</a><hr>
 {% endfor %}
 </body>
 </html>
