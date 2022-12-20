@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Select a service</h1>
+
+<form>
+    <input type="submit" name="service" value="Standard">
+    <input type="submit" name="service" value="Premium">
+</form><hr>
+{% if price %}
+Price = {{price}}
+Days to Deliver = {{days}}<hr>
+<a href="/address">Enter address</a>
+{% endif %}
+</body>
+</html>
