@@ -1,18 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block content %}
+<br>
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<form method="post">
+<center>
+<form method="post" class="form-group">
     {{form.username.name}}
-    {{form.username}}
+    {{form.username}}<br><br>
     {{form.password.name}}
-    {{form.password}}
+    {{form.password}}<br><br>
     {{form.submit}}
 </form>
-<a href="/register">Sign up</a>
+<a href="/register"><button type="button" class="btn btn-primary btn-sm">Signup</button></a></center>
 {% with messages = get_flashed_messages() %}
  {% if messages %}
   <ul>
@@ -24,3 +26,4 @@
 {% endwith %}
 </body>
 </html>
+{% endblock %}

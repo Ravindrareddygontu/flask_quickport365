@@ -5,17 +5,16 @@
     <title>Title</title>
 </head>
 <body>
+<center>
 <h1>Your Bookings  {{total}}</h1><hr>
 {% for order in rows %}
 Item Name = {{order.itemname}}<br><br>
-Item Weight = {{order.itemweight}}<br><br>
-Item Date = {{order.date}}<br><br>
-Delivery_address = {{order.delivery_address}}<br><br>
+Date = {{order.date}}<br><br>
 Receiver = {{order.receiver}}<br><br>
 Receiver Phone = {{order.receiver_phone}}<br><br>
-Origin pincode = {{order.originpin}}<br><br>
-Destination Pincode = {{order.destinationpin}}<hr>
-{% endfor %}
+    Delivery_address = {{order.delivery_address}}<br><br>
+<a href="/cancel/{{order.id}}" class="btn btn-danger btn-sm">Cancel the Order</a><hr>
+{% endfor %}</center>
 </body>
 </body>
 </html>

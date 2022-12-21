@@ -5,17 +5,19 @@
     <title>Title</title>
 </head>
 <body>
-<h1>Select a service</h1>
+<center>
+<h2>Select a service</h2><br>
 
 <form>
     <input type="submit" name="service" value="Standard">
     <input type="submit" name="service" value="Premium">
 </form><hr>
 {% if price %}
-Price = {{price}}<hr>
-Days to Deliver = {{days}}<hr>
-<a href="/address">Enter address</a>
-{% endif %}
+<h3>Price = {{price}}</h3><hr>
+<h3>Days to Deliver = {{days}} days</h3><hr>
+    <a href="/item_details"><button type="button" class="btn btn-dark btn-sm">Go Back</button></a>
+<a href="/address"><button type="button" class="btn btn-info btn-sm">Enter delivery address</button></a>
+{% endif %}</center>
 </body>
 </html>
 {% endblock %}

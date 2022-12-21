@@ -5,7 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-<a href="/orders_list">All orders</a>
+<center>
+{% if superuser != True %}
 {% with messages = get_flashed_messages() %}
  {% if messages %}
   <ul>
@@ -15,21 +16,19 @@
   </ul>
  {% endif %}
 {% endwith %}
-<h1>Welcome {{user}}</h1>
+<h3>Welcome {{user}}</h3><br>
 <form method="post">
     {{form.hidden_tag()}}
-    {{form.origin_pincode.name}}
+    <h4>Origin Pincode:</h4>
     {{form.origin_pincode}}<br><br>
-    {{form.destination_pincode.name}}
+     <h4>Destination Pincode:</h4>
     {{form.destination_pincode}}<br><br>
     {{form.submit}}
-</form><hr>
-<a href="/register">signup</a><br><br>
-{% if user==None %}
-<a href="/login">login</a>
+</form>
 {% else %}
-<a href="/logout">logout</a>
-{% endif %}
+<h1>Welcome admin {{user}}</h1>
+{% endif %}<hr>
+    </center>
 </body>
 </html>
 {% endblock %}

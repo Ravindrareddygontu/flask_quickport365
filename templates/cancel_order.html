@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body><center>
+<h1>Are u sure want to cancel the order</h1>
+<form method="post" action="/cancel/{{id}}">
+    <input class="btn btn-primary" type="submit" value="Yes">
+</form>
+<a class="btn btn-secondary">Go back</a></center>
+</body>
+</html>
+{% endblock %}

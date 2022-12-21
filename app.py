@@ -26,18 +26,29 @@ Session(app)
 #   print(data.description)
 
 'creating super user'
+# with sqlite3.connect('database.db') as con:
+#     # con.execute('alter table users add superuser int default 0')
+#     con.execute('insert into users (username,email,password,superuser) values(?,?,?,?)', ('ravi', 'r@gmail.com',
+#     '1234', True))
+
+
 @app.route('/base', methods=['GET', 'POST'])
 def base():
     user = None
+    superuser = None
     if session.get('user'):
         user = session['user']
-    return render_template('base.html', user=user)
+    if session.get('superuser'):
+        session['superuser'] = True
+        superuser = session['superuser']
+    return render_template('base.html', user=user, superuser=superuser)
 
 
 @app.route('/bookings')
 def user_bookings():
     if session.get('user'):
         user = session['user']
+
     else:
         flash('Login to continue')
         return redirect('/login')
@@ -62,7 +73,9 @@ def home():
             flash('Please login to continue')
             return redirect('/login')
     user = session.get('user')
-    return render_template('home.html', form=form, user=user)
+    print(session.get('superuser'))
+    superuser = session.get('superuser')
+    return render_template('home.html', form=form, user=user, superuser=superuser)
 
 
 @app.route('/item_details', methods=['GET', 'POST'])
@@ -149,7 +162,32 @@ def orders_list():
         rows = cur.fetchall()
         for i in rows:
             print(i)
-    return render_template('orders_list.html', rows=rows)
+    if session.get('superuser'):
+        superuser = session.get('superuser')
+    return render_template('orders_list.html', rows=rows,total=len(rows), superuser=superuser)
+
+
+@app.route('/cancel/<int:id>', methods=('GET', 'POST'))
+def cancel_order(id):
+    if request.method == 'POST':
+        with sqlite3.connect('database.db') as con:
+            con.execute('delete from orderdetails where id=?', (id,))
+            con.commit()
+            return redirect('/bookings')
+    else:
+        return render_template('cancel_order.html', id=id)
+
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+
+@app.route('/complaints')
+def complaints():
+    if session.get('superuser'):
+        superuser = session.get('superuser')
+    return render_template('complaints.html', superuser=superuser)
 
 
 @app.route('/list_items')
@@ -213,13 +251,15 @@ def register():
 @app.route('/login', methods=(['POST', 'GET']))
 def login():
     form = LoginForm()
-    print('yes')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         con = sqlite3.connect('database.db')
         users = con.execute('select * from users')
         for i in users.fetchall():
+            if i[3] == 1:
+                print('yes===============')
+                session['superuser'] = True
             if i[0] == username and i[2] == password:
                 flash('logged in successfully')
                 session['user'] = username
@@ -234,6 +274,7 @@ def login():
 def logout():
     if session.get('user'):
         session['user'] = None
+        session['superuser'] = False
         flash('logged out successfully')
         return redirect('/')
     else:

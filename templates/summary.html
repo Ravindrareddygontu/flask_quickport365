@@ -4,22 +4,22 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
-<h1>Order summary</h1><hr>
-<h1>Total Price = {{price}}</h1>
+<body><center>
+<h2>Order summary</h2><hr>
+<h4>Total Price = {{price}}</h4>
 {% for key,value in item_details.items() %}
 {% if key != 'csrf_token' %}
-<h2>{{key}} = {{value}}</h2>
+<h4>{{key}} = {{value}}</h4>
 {% endif %}
 {% endfor %}
-<h2>Service = {{service}}</h2>
+<h4>Service = {{service}}</h4>
 {% for key,value in daddress.items() %}
-<h2>{{key}} = {{value}}</h2>
+<h4>{{key}} = {{value}}</h4>
 {% endfor %}<hr>
 <form action="/success">
-    <input type="submit" value="Paynow">
+    <input type="submit" value="Paynow" class="btn btn-success">
 </form>
-<a href="/address">Go Back</a>
+<a href="/address" class="btn btn-secondary btn-sm">Go Back</a></center>
 </body>
 </html>
 {% endblock %}
