@@ -1,11 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<a href="/list_items">All orders</a>
+<a href="/orders_list">All orders</a>
 {% with messages = get_flashed_messages() %}
  {% if messages %}
   <ul>
@@ -15,8 +15,7 @@
   </ul>
  {% endif %}
 {% endwith %}
-<h1>this is home page</h1>
-
+<h1>Welcome {{user}}</h1>
 <form method="post">
     {{form.hidden_tag()}}
     {{form.origin_pincode.name}}
@@ -24,8 +23,13 @@
     {{form.destination_pincode.name}}
     {{form.destination_pincode}}<br><br>
     {{form.submit}}
-</form>
-
-<a href="/register">signup</a>
+</form><hr>
+<a href="/register">signup</a><br><br>
+{% if user==None %}
+<a href="/login">login</a>
+{% else %}
+<a href="/logout">logout</a>
+{% endif %}
 </body>
 </html>
+{% endblock %}

@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body>
+<a href="/">Go Home</a><hr>
 {% for i in row %}
 Item Name = {{i.name}}<br>
 Item Name = {{i.weight}}<br>
@@ -12,7 +13,7 @@ Order date = {{i.date}}<br>
 Receiver = {{i.receiver}}<br>
 Receiver Phone = {{i.receiver_phone}}<br>
 <a href="/edit_item/{{i.id}}">Edit</a>
-<a href="/delete_item">Delete</a><hr>
+<a href="/delete_item/{{i.id}}">Delete</a><hr>
 {% endfor %}
 </body>
 </html>

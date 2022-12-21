@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>Your Bookings  {{total}}</h1><hr>
+{% for order in rows %}
+Item Name = {{order.itemname}}<br><br>
+Item Weight = {{order.itemweight}}<br><br>
+Item Date = {{order.date}}<br><br>
+Delivery_address = {{order.delivery_address}}<br><br>
+Receiver = {{order.receiver}}<br><br>
+Receiver Phone = {{order.receiver_phone}}<br><br>
+Origin pincode = {{order.originpin}}<br><br>
+Destination Pincode = {{order.destinationpin}}<hr>
+{% endfor %}
+</body>
+</body>
+</html>
+{% endblock %}

@@ -1,13 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+{% block content %}
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
+<h1>Order summary</h1><hr>
 <h1>Total Price = {{price}}</h1>
+{% for key,value in item_details.items() %}
+{% if key != 'csrf_token' %}
+<h2>{{key}} = {{value}}</h2>
+{% endif %}
+{% endfor %}
+<h2>Service = {{service}}</h2>
+{% for key,value in daddress.items() %}
+<h2>{{key}} = {{value}}</h2>
+{% endfor %}<hr>
 <form action="/success">
-    <input type="submit" value="Paynow" >
+    <input type="submit" value="Paynow">
 </form>
+<a href="/address">Go Back</a>
 </body>
 </html>
+{% endblock %}
