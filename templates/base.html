@@ -20,7 +20,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             <ul class="navbar-nav">
-                {% if superuser != True %}
+                {% if not superuser %}
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
@@ -29,6 +29,9 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/contact">Contact</a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="/about">About us</a>
                 </li>
                 {% else %}
                  <li class="nav-item">
@@ -53,7 +56,7 @@
                     Profile
                 </a>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#">Profile</a></li>
+                    <li><a class="dropdown-item" href="/profile">Profile</a></li>
                     <li><a class="dropdown-item" href="#">About us</a></li>
                     <li><a class="dropdown-item" href="/logout">Logout</a></li>
                 </ul>

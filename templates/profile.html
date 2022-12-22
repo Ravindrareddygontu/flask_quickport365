@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<body>
+<div class="row align-items-center">
+</div>
+<center>
+        <img src="{{ url_for('static', filename='images/profile.jpg') }}" alt="..."><hr>
+        <form method="post" enctype=multipart/form-data>
+            <input type="file" value="file" name="file">
+            <input type="submit">
+        </form>
+            <h6 class="h2 text-white mb-0">{{user}}</h6>
+               <h1> No.of bookings {{orders}} </h1>
+          <h2>Email {{row[1]}}</h2>
+</center>
+</body>
+</html>
+{% endblock %}

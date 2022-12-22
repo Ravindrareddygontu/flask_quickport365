@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DateTimeField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, IntegerField, DateField
 from wtforms.validators import DataRequired, Length, EqualTo
 
 
@@ -28,6 +28,6 @@ class ItemDetails(FlaskForm):
     id = IntegerField(validators=[DataRequired()])
     name = StringField(validators=[DataRequired()])
     weight = IntegerField(validators=[DataRequired()])
-    date = DateTimeField(validators=[DataRequired()])
+    date = DateField(format='%m/%d/%Y', validators=[DataRequired()])
     receiver = StringField(validators=[DataRequired()])
     receiver_phone = StringField(validators=[DataRequired()])

@@ -2,11 +2,16 @@ from flask import Flask, request, render_template, url_for, flash, redirect, ses
 import sqlite3
 from flask_session import Session
 from forms import RegistrationForm, LoginForm, DeliveryRange, ItemDetails
+from werkzeug.utils import secure_filename
+import os
 
+UPLOAD_FOLDER = 'C:\\Users\\rg22060\\Desktop\\Django\\flask_basics\\flask_quickport365\\media\\uploaded_images'
+ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app = Flask('g')
 app.config['SECRET_KEY'] = 'flask303'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 Session(app)
 
 # connection = sqlite3.connect('database.db')
@@ -46,9 +51,9 @@ def base():
 
 @app.route('/bookings')
 def user_bookings():
+    superuser = False
     if session.get('user'):
         user = session['user']
-
     else:
         flash('Login to continue')
         return redirect('/login')
@@ -56,15 +61,13 @@ def user_bookings():
         con.row_factory = sqlite3.Row
         cur = con.execute('select * from orderdetails where user=?', (user,))
         rows = cur.fetchall()
-        print(rows)
-    return render_template('bookings.html', rows=rows, total=len(rows))
+    return render_template('bookings.html', rows=rows, total=len(rows), superuser=superuser)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
     form = DeliveryRange()
     if request.method == 'POST':
-        print(request.form)
         if session.get('user'):
             if form.validate_on_submit():
                 session['pincodes'] = request.form
@@ -73,7 +76,6 @@ def home():
             flash('Please login to continue')
             return redirect('/login')
     user = session.get('user')
-    print(session.get('superuser'))
     superuser = session.get('superuser')
     return render_template('home.html', form=form, user=user, superuser=superuser)
 
@@ -82,7 +84,6 @@ def home():
 def item_details():
     form = ItemDetails()
     if request.method == "POST":
-            print(request.form)
             name = request.form['name']
             weight = request.form['weight']
             date = request.form['date']
@@ -114,7 +115,7 @@ def services():
 @app.route('/address', methods=['POST', 'GET'])
 def address():
     if request.method == 'POST':
-        print(request.form)
+
         session['daddress'] = request.form
         return redirect('/summary')
     return render_template('address.html')
@@ -142,10 +143,10 @@ def success():
     opin = session['pincodes']['origin_pincode']
     dpin = session['pincodes']['destination_pincode']
     daddress = ''
-    print(session['daddress'])
+
     for i in session['daddress']:
         daddress += session['daddress'][i]+','
-    print(daddress)
+
     with sqlite3.connect('database.db') as con:
         con.execute('insert into orderdetails (user, itemname, itemweight, date, receiver, receiver_phone, service, '
                     'price, '
@@ -162,9 +163,8 @@ def orders_list():
         rows = cur.fetchall()
         for i in rows:
             print(i)
-    if session.get('superuser'):
-        superuser = session.get('superuser')
-    return render_template('orders_list.html', rows=rows,total=len(rows), superuser=superuser)
+    superuser = session.get('superuser')
+    return render_template('orders_list.html', rows=rows, total=len(rows), superuser=superuser)
 
 
 @app.route('/cancel/<int:id>', methods=('GET', 'POST'))
@@ -180,14 +180,38 @@ def cancel_order(id):
 
 @app.route('/contact')
 def contact():
-    return render_template('contact.html')
+    superuser = False
+    return render_template('contact.html', superuser=superuser)
+
+
+@app.route('/about')
+def about_us():
+    return render_template('about.html')
 
 
 @app.route('/complaints')
 def complaints():
-    if session.get('superuser'):
-        superuser = session.get('superuser')
+    superuser = session.get('superuser')
     return render_template('complaints.html', superuser=superuser)
+
+
+@app.route('/profile', methods=(['GET', 'POST']))
+def profile():
+    user = session.get('user')
+    if request.method == 'POST':
+        print(request.files)
+        file = request.files.get('file')
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+    with sqlite3.connect('database.db') as con:
+        cur = con.execute('select * from users where username=?', (user,))
+        orders = con.execute('select * from orderdetails where user=?', (user,))
+        row = cur.fetchone()
+    return render_template('profile.html', user=user, row=row, orders=len(orders.fetchall()))
+
+
+@app.route('/changeprofile')
+def profile_change():
+    pass
 
 
 @app.route('/list_items')
@@ -258,7 +282,6 @@ def login():
         users = con.execute('select * from users')
         for i in users.fetchall():
             if i[3] == 1:
-                print('yes===============')
                 session['superuser'] = True
             if i[0] == username and i[2] == password:
                 flash('logged in successfully')
