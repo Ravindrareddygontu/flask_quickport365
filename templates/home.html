@@ -16,20 +16,27 @@
   </ul>
  {% endif %}
 {% endwith %}
+
 <h3>Welcome {{user}}</h3><br>
+    {% if book %}
 <form method="post">
     {{form.hidden_tag()}}
-    <h4>Origin Pincode:</h4>
+    <h4>Enter Origin Pincode:</h4>
     {{form.origin_pincode}}<br><br>
-     <h4>Destination Pincode:</h4>
+     <h4>Enter Destination Pincode:</h4>
     {{form.destination_pincode}}<br><br>
-    {{form.submit}}
+    <input type="submit" class="btn btn-info" value="Next">
 </form>
+    {% else %}
+      <form method="get">
+        <input class="btn btn-info" type="submit" name="book" value="Click here to Book Parcel">
+    </form>
+    {% endif %}
 {% else %}
 <h1>Welcome admin {{user}}</h1>
 {% endif %}<hr>
     </center>
-<img src="{{ url_for('static', filename='images/profile.jpg') }}" alt="profile">
+
 </body>
 </html>
 {% endblock %}

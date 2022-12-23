@@ -12,6 +12,7 @@ app.config['SECRET_KEY'] = 'flask303'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['STATIC_IMAGES'] = 'C:\\Users\\rg22060\\Desktop\\Django\\flask_basics\\flask_quickport365\\static\\images'
 Session(app)
 
 # connection = sqlite3.connect('database.db')
@@ -75,9 +76,11 @@ def home():
         else:
             flash('Please login to continue')
             return redirect('/login')
-    user = session.get('user')
-    superuser = session.get('superuser')
-    return render_template('home.html', form=form, user=user, superuser=superuser)
+    if request.method == 'GET':
+        book = request.args.get('book')
+        user = session.get('user')
+        superuser = session.get('superuser')
+        return render_template('home.html', form=form, user=user, superuser=superuser, book=book)
 
 
 @app.route('/item_details', methods=['GET', 'POST'])
@@ -199,9 +202,10 @@ def complaints():
 def profile():
     user = session.get('user')
     if request.method == 'POST':
-        print(request.files)
-        file = request.files.get('file')
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+        if 'file' in request.files:
+            file = request.files.get('file')
+            file.filename = 'profile_pic.jpg'
+            file.save(os.path.join(app.config['STATIC_IMAGES'], file.filename))
     with sqlite3.connect('database.db') as con:
         cur = con.execute('select * from users where username=?', (user,))
         orders = con.execute('select * from orderdetails where user=?', (user,))

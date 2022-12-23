@@ -4,14 +4,16 @@
 <div class="row align-items-center">
 </div>
 <center>
-        <img src="{{ url_for('static', filename='images/profile.jpg') }}" alt="..."><hr>
+        <img class="rounded-circle" src="{{ url_for('static', filename='images/profile_pic.jpg') }}"
+                width="200" height="150" alt="..."><br><br>
         <form method="post" enctype=multipart/form-data>
-            <input type="file" value="file" name="file">
-            <input type="submit">
-        </form>
-            <h6 class="h2 text-white mb-0">{{user}}</h6>
-               <h1> No.of bookings {{orders}} </h1>
-          <h2>Email {{row[1]}}</h2>
+            <label for="files" class="btn btn-info">Change Pic</label>
+            <input id="files" hidden type="file" name="file" value="file">
+            <input class="btn btn-secondary btn-sm" type="submit">
+        </form><hr>
+
+               <h3> No.of bookings = {{orders}} </h3>
+          <h3>Email = {{row[1]}}</h3>
 </center>
 </body>
 </html>
