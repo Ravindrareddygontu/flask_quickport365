@@ -1,20 +1,21 @@
-from flask import Flask, request, render_template, url_for, flash, redirect, session
+from flask import Flask, request, render_template, url_for, flash, redirect, session, send_from_directory
 import sqlite3
 from flask_session import Session
 from forms import RegistrationForm, LoginForm, DeliveryRange, ItemDetails
 from werkzeug.utils import secure_filename
 import os
 
-UPLOAD_FOLDER = 'C:\\Users\\rg22060\\Desktop\\Django\\flask_basics\\flask_quickport365\\media\\uploaded_images'
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app = Flask('g')
 app.config['SECRET_KEY'] = 'flask303'
+
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_TYPE'] = 'filesystem'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['STATIC_IMAGES'] = 'C:\\Users\\rg22060\\Desktop\\Django\\flask_basics\\flask_quickport365\\static\\images'
+app.config['UPLOAD_FOLDER'] = os.path.join(app.root_path, r'media\profile_pics')
+app.config['STATIC_IMAGES'] = 'C:\\Users\\rg22060\\Desktop\\Django\\flask_basics\\flask_quickport365\\static\\'
 Session(app)
 
+print(app.root_path)
 # connection = sqlite3.connect('database.db')
 # connection.execute('create table users (username text, email text,
 # password text)') connection.close()
@@ -32,6 +33,8 @@ Session(app)
 #   print(data.description)
 
 'creating super user'
+
+
 # with sqlite3.connect('database.db') as con:
 #     # con.execute('alter table users add superuser int default 0')
 #     con.execute('insert into users (username,email,password,superuser) values(?,?,?,?)', ('ravi', 'r@gmail.com',
@@ -87,16 +90,16 @@ def home():
 def item_details():
     form = ItemDetails()
     if request.method == "POST":
-            name = request.form['name']
-            weight = request.form['weight']
-            date = request.form['date']
-            receiver = request.form['receiver']
-            receiver_phone = request.form['receiver_phone']
-            session['item_details'] = request.form
-            with sqlite3.connect('database.db') as con:
-                con.execute('insert into itemdetails (name,weight,date,receiver,receiver_phone) values (?,?,?,?,?)',
-                            (name, weight, date, receiver, receiver_phone))
-            return redirect('/services')
+        name = request.form['name']
+        weight = request.form['weight']
+        date = request.form['date']
+        receiver = request.form['receiver']
+        receiver_phone = request.form['receiver_phone']
+        session['item_details'] = request.form
+        with sqlite3.connect('database.db') as con:
+            con.execute('insert into itemdetails (name,weight,date,receiver,receiver_phone) values (?,?,?,?,?)',
+                        (name, weight, date, receiver, receiver_phone))
+        return redirect('/services')
     return render_template('item_details.html', form=form)
 
 
@@ -118,7 +121,6 @@ def services():
 @app.route('/address', methods=['POST', 'GET'])
 def address():
     if request.method == 'POST':
-
         session['daddress'] = request.form
         return redirect('/summary')
     return render_template('address.html')
@@ -148,7 +150,7 @@ def success():
     daddress = ''
 
     for i in session['daddress']:
-        daddress += session['daddress'][i]+','
+        daddress += session['daddress'][i] + ','
 
     with sqlite3.connect('database.db') as con:
         con.execute('insert into orderdetails (user, itemname, itemweight, date, receiver, receiver_phone, service, '
@@ -201,21 +203,28 @@ def complaints():
 @app.route('/profile', methods=(['GET', 'POST']))
 def profile():
     user = session.get('user')
+    pic = 0
     if request.method == 'POST':
         if 'file' in request.files:
             file = request.files.get('file')
-            file.filename = 'profile_pic.jpg'
-            file.save(os.path.join(app.config['STATIC_IMAGES'], file.filename))
+            print(file.filename)
+            file.filename = f'{user}_pic.jpg'
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+            pic = 1
     with sqlite3.connect('database.db') as con:
         cur = con.execute('select * from users where username=?', (user,))
         orders = con.execute('select * from orderdetails where user=?', (user,))
         row = cur.fetchone()
-    return render_template('profile.html', user=user, row=row, orders=len(orders.fetchall()))
+    return render_template('profile.html', user=user, pic=pic, row=row, orders=len(orders.fetchall()))
 
 
-@app.route('/changeprofile')
-def profile_change():
-    pass
+@app.route('/media/<path:filename>')
+def media(filename):
+    return send_from_directory(
+        app.config['UPLOAD_FOLDER'],
+        filename+'_pic.jpg',
+        as_attachment=True
+    )
 
 
 @app.route('/list_items')
@@ -246,7 +255,8 @@ def edit_item(id):
         for i in var:
             record = i
     name, weight, date, receiver_ph = record[1], record[2], record[3], record[5]
-    return render_template('edit_item.html', record=record, name=name, weight=weight, date=date, receiver_ph=receiver_ph)
+    return render_template('edit_item.html', record=record, name=name, weight=weight, date=date,
+                           receiver_ph=receiver_ph)
 
 
 @app.route('/delete_item/<int:id>')
@@ -279,13 +289,15 @@ def register():
 @app.route('/login', methods=(['POST', 'GET']))
 def login():
     form = LoginForm()
+    user = session.get('user')
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         con = sqlite3.connect('database.db')
         users = con.execute('select * from users')
         for i in users.fetchall():
-            if i[3] == 1:
+            if i[0] == username and i[3] == 1:
+                print(i)
                 session['superuser'] = True
             if i[0] == username and i[2] == password:
                 flash('logged in successfully')
@@ -294,7 +306,7 @@ def login():
         else:
             flash('wrong credentials')
             return render_template('login.html', form=form)
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, user=user)
 
 
 @app.route('/logout')

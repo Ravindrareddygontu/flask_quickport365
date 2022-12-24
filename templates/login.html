@@ -1,20 +1,22 @@
 {% extends 'base.html' %}
 {% block content %}
-<br>
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<center>
+<center><br>
+    <h3>Login here to continue</h3><br>
 <form method="post" class="form-group">
     {{form.username.name}}
     {{form.username}}<br><br>
     {{form.password.name}}
     {{form.password}}<br><br>
-    {{form.submit}}
+    <input type="submit" class="btn btn-primary" value="login">
 </form>
-<a href="/register"><button type="button" class="btn btn-primary btn-sm">Signup</button></a></center>
+    Don't have an account..?
+<a href="/register"><button type="button" class="btn btn-secondary btn-sm">Signup</button></a></center>
 {% with messages = get_flashed_messages() %}
  {% if messages %}
   <ul>

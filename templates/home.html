@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
 </head>
 <body>
 <center>
@@ -28,15 +29,19 @@
     <input type="submit" class="btn btn-info" value="Next">
 </form>
     {% else %}
+    {% if user %}
       <form method="get">
         <input class="btn btn-info" type="submit" name="book" value="Click here to Book Parcel">
     </form>
+    {% else %}
+    <a href="/login" class="btn btn-info">Click here to Book Parcel</a>
+    {% endif %}
     {% endif %}
 {% else %}
 <h1>Welcome admin {{user}}</h1>
-{% endif %}<hr>
+{% endif %}
     </center>
-
+<!--<img src="https://images.pexels.com/photos/262353/pexels-photo-262353.jpeg" width="4000" height="500">-->
 </body>
 </html>
 {% endblock %}
