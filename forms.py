@@ -31,3 +31,14 @@ class ItemDetails(FlaskForm):
     date = DateField(format='%m/%d/%Y', validators=[DataRequired()])
     receiver = StringField(validators=[DataRequired()])
     receiver_phone = StringField(validators=[DataRequired()])
+
+
+class TransporterForm(FlaskForm):
+    username = StringField('username', validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField('email', validators=[DataRequired()])
+    phone_no = StringField(validators=[DataRequired()])
+    vehicle_name = StringField(validators=[DataRequired()])
+    vehicle_no = StringField(validators=[DataRequired()])
+    driving_license = StringField(validators=[DataRequired()])
+
+

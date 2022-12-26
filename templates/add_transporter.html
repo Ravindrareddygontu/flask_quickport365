@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body><center><br>
+<form method="post">
+    {{form.hidden_tag()}}
+{{form.username.name}}
+    {{form.username}}<br><br>
+    {{form.email.name}}
+    {{form.email}}<br><br>
+    {{form.phone_no.name}}
+    {{form.phone_no}}<br><br>
+    <input type="submit" class="btn btn-info">
+</form></center>
+</body>
+</html>
+{% endblock %}

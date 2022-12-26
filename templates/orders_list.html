@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
-<body>
+<body><center>
 <h1>List of orders {{total}}</h1><hr>
 {% for order in rows %}
 User = {{order.user}}<br><br>
@@ -17,7 +17,7 @@ Receiver Phone = {{order.receiver_phone}}<br><br>
 Origin pincode = {{order.originpin}}<br><br>
 Destination Pincode = {{order.destinationpin}}
 <hr>
-{% endfor %}
+{% endfor %}</center>
 </body>
 </html>
 {% endblock %}

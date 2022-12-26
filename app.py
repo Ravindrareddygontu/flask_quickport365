@@ -1,8 +1,9 @@
 from flask import Flask, request, render_template, url_for, flash, redirect, session, send_from_directory
 import sqlite3
 from flask_session import Session
-from forms import RegistrationForm, LoginForm, DeliveryRange, ItemDetails
+from forms import RegistrationForm, LoginForm, DeliveryRange, ItemDetails, TransporterForm
 from werkzeug.utils import secure_filename
+from flask_paginate import Pagination, get_page_parameter
 import os
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -20,8 +21,8 @@ print(app.root_path)
 # connection.execute('create table users (username text, email text,
 # password text)') connection.close()
 # con.execute('create table itemdetails ( id INTEGER PRIMARY KEY AUTOINCREMENT ,
-# name text, weight text, ' 'date text, ' 'receiver text, receiver_phone text)') con.execute('create table
-# orderdetails
+# name text, weight text, ' 'date text, ' 'receiver text, receiver_phone text)')
+# con.execute('create table orderdetails
 # (id INTEGER PRIMARY KEY AUTOINCREMENT, user text, itemname text, itemweight text,' 'date text,
 # receiver text, receiver_phone text, service text, price text, delivery_address text)')
 # con.commit()
@@ -33,12 +34,15 @@ print(app.root_path)
 #   print(data.description)
 
 'creating super user'
-
-
 # with sqlite3.connect('database.db') as con:
 #     # con.execute('alter table users add superuser int default 0')
 #     con.execute('insert into users (username,email,password,superuser) values(?,?,?,?)', ('ravi', 'r@gmail.com',
 #     '1234', True))
+
+'creating transporter table'
+# with sqlite3.connect('database.db') as con:
+#     con.execute('create table transporter (id INTEGER PRIMARY KEY AUTOINCREMENT, username text, email text, '
+#                 'phoneno text, vehiclename text, vehicleno text, drivinglicense text )')
 
 
 @app.route('/base', methods=['GET', 'POST'])
@@ -166,10 +170,12 @@ def orders_list():
         con.row_factory = sqlite3.Row
         cur = con.execute('select * from orderdetails')
         rows = cur.fetchall()
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        pagination = Pagination(page=page, total=len(rows), record_name=rows)
         for i in rows:
             print(i)
     superuser = session.get('superuser')
-    return render_template('orders_list.html', rows=rows, total=len(rows), superuser=superuser)
+    return render_template('orders_list.html', rows=rows, total=len(rows), superuser=superuser, pagination=pagination)
 
 
 @app.route('/cancel/<int:id>', methods=('GET', 'POST'))
@@ -332,6 +338,30 @@ def user_list():
     rows = cur.fetchall()
     print(rows)
     return render_template('users.html', rows=rows)
+
+
+@app.route('/transporters')
+def transporters():
+    superuser = session.get('superuser')
+    with sqlite3.connect('database.db') as con:
+        con.row_factory = sqlite3.Row
+        cur = con.cursor()
+        cur.execute('select * from transporter')
+        row = cur.fetchall()
+    return render_template('transporters.html', row=row, superuser=superuser)
+
+
+@app.route('/addtransporter', methods=(['POST', 'GET']))
+def add_transporter():
+    form = TransporterForm()
+    superuser = session.get('superuser')
+    if request.method == 'POST':
+        user = request.form['username']
+        email = request.form['email']
+        ph = request.form['phone_no']
+        with sqlite3.connect('database.db') as con:
+            con.execute('insert into transporter(username,email,phoneno) values(?,?,?)', (user, email, ph))
+    return render_template('add_transporter.html', form=form, superuser=superuser)
 
 
 if __name__ == '__main__':

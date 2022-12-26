@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block content %}
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body><center><br>
+<a class="btn btn-info" href="/addtransporter">Add driver</a><hr>
+{% for i in row %}
+    <h1>Name = {{i.username}}</h1>
+    <h3>Email = {{i.email}}</h3>
+   <h3> {{i.phoneno}}</h3><hr>
+    {% endfor %}
+</center>
+</body>
+</html>
+{% endblock %}
