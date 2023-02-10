@@ -3,7 +3,6 @@ import sqlite3
 from flask_session import Session
 from forms import RegistrationForm, LoginForm, DeliveryRange, ItemDetails, TransporterForm
 from werkzeug.utils import secure_filename
-from flask_paginate import Pagination, get_page_parameter
 import os
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
@@ -170,12 +169,10 @@ def orders_list():
         con.row_factory = sqlite3.Row
         cur = con.execute('select * from orderdetails')
         rows = cur.fetchall()
-        page = request.args.get(get_page_parameter(), type=int, default=1)
-        pagination = Pagination(page=page, total=len(rows), record_name=rows)
         for i in rows:
             print(i)
     superuser = session.get('superuser')
-    return render_template('orders_list.html', rows=rows, total=len(rows), superuser=superuser, pagination=pagination)
+    return render_template('orders_list.html', rows=rows, total=len(rows), superuser=superuser)
 
 
 @app.route('/cancel/<int:id>', methods=('GET', 'POST'))
@@ -212,6 +209,7 @@ def profile():
     pic = 0
     if request.method == 'POST':
         if 'file' in request.files:
+            print(request.files)
             file = request.files.get('file')
             print(file.filename)
             file.filename = f'{user}_pic.jpg'
